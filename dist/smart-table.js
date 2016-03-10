@@ -158,6 +158,14 @@ ng.module('smart-table')
       var output;
       filtered = tableState.search.predicateObject ? filter(safeCopy, tableState.search.predicateObject) : safeCopy;
       if (tableState.sort.predicate) {
+        // replace null values
+        for(var f=0; f<filtered.length; f++){
+          var item = filtered[f];
+          if(item[tableState.sort.predicate] === null
+          || item[tableState.sort.predicate] === undefined){
+            item[tableState.sort.predicate] = '';
+          }
+        }
         filtered = orderBy(filtered, tableState.sort.predicate, tableState.sort.reverse);
       }
       pagination.totalItemCount = filtered.length;
@@ -522,6 +530,24 @@ ng.module('smart-table')
 
         post: function (scope, element, attrs, ctrl) {
           ctrl.pipe();
+        }
+      }
+    };
+  }]);
+
+ng.module('smart-table')
+  .directive('stChange', ['stConfig', '$timeout', function (config, $timeout) {
+    return {
+      require: 'stTable',
+      scope: {
+        stChange: '='
+      },
+      link: {
+        pre: function (scope, element, attrs, ctrl) {
+          ctrl.pipe = function () {
+            scope.stChange(ctrl.tableState(), ctrl);
+            return ctrl.defaultPipe();
+          }
         }
       }
     };
