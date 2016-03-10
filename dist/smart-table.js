@@ -1,7 +1,3 @@
-/** 
-* @version 2.1.7
-* @license MIT
-*/
 (function (ng, undefined){
     'use strict';
 
@@ -157,7 +153,7 @@ ng.module('smart-table')
     /**
      * this will chain the operations of sorting and filtering based on the current table state (sort options, filtering, ect)
      */
-    this.pipe = function pipe () {
+    this.pipe = this.defaultPipe = function pipe () {
       var pagination = tableState.pagination;
       var output;
       filtered = tableState.search.predicateObject ? filter(safeCopy, tableState.search.predicateObject) : safeCopy;
